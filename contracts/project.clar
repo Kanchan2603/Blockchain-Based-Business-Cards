@@ -1,42 +1,31 @@
-;; Blockchain-Based Business Cards
-;; Store and share contact information securely on-chain
+;; Map to store business card per user
+(define-map business-cards
+  {user: principal}  ;; key
+  {name: (string-ascii 50), title: (string-ascii 50), contact: (string-ascii 50)}) ;; value
 
-;; Constants
-(define-constant err-already-registered (err u100))
-(define-constant err-not-registered (err u101))
-(define-constant err-empty-field (err u102))
+(define-constant err-empty-field (err u100))
 
-;; Define a data structure for a business card
-(define-map business-cards principal
-  (tuple
-    (name (string-ascii 50))
-    (email (string-ascii 50))
-    (phone (string-ascii 20))
-    (company (string-ascii 50))
-  )
-)
-
-;; Function to create a business card (only once per user)
-(define-public (create-card
-  (name (string-ascii 50))
-  (email (string-ascii 50))
-  (phone (string-ascii 20))
-  (company (string-ascii 50))
-)
+;; Public function to save/update business card
+(define-public (set-business-card 
+  (name (string-ascii 50)) 
+  (title (string-ascii 50)) 
+  (contact (string-ascii 50)))
   (begin
-    (asserts! (not (is-some (map-get? business-cards tx-sender))) err-already-registered)
     (asserts! (> (len name) u0) err-empty-field)
-    (asserts! (> (len email) u0) err-empty-field)
-    (map-set business-cards tx-sender {
-      name: name,
-      email: email,
-      phone: phone,
-      company: company
-    })
+    (asserts! (> (len title) u0) err-empty-field)
+    (asserts! (> (len contact) u0) err-empty-field)
+    (map-set business-cards 
+             {user: tx-sender} 
+             {name: name, title: title, contact: contact})
     (ok true)))
 
-;; Function to read a business card by principal
-(define-read-only (get-card (user principal))
-  (match (map-get? business-cards user)
-    some-card (ok some-card)
-    none err-not-registered))
+;; Read-only function to view own business card
+(define-read-only (get-my-business-card)
+  (let ((entry (map-get? business-cards {user: tx-sender})))
+    (ok (match entry
+         val (some {
+           name: (get name val), 
+           title: (get title val), 
+           contact: (get contact val)
+         })
+         none))))
