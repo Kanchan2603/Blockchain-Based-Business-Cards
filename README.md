@@ -22,6 +22,6 @@ To revolutionize how professionals exchange contact information by leveraging bl
 
 ## 5. Contract Address
 
-Testnet Contract address: `ST2EV4JDJQKWQV13H0VVHG66ABCTR1P8YR596CHR6.blockchain-based-business-cards`
+Testnet Contract address: `STGPBEW1DRVNA863AYGPGNJ91SYNBYKTZ0QB.blockchain-based-bussiness-card`
 ![image](https://github.com/user-attachments/assets/0bf4f90a-e345-4b89-84c9-9804231b4990)
 
